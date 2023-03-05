@@ -10,13 +10,16 @@
       </round-button-small>
       <div class="post__desc">
         <div class="post__header">
-          <img class="post__header-img" :src="user.img" alt="user">
+          <img v-if="!user.img" class="post__header-img" src="../../assets/users/no-avatar.png" alt="user">
+          <img v-if="user.img" class="post__header-img" :src="user.img" alt="user">
           <h2 class="post__header-title title-fz20 title">{{ user.username }}</h2>
         </div>
         <div class="post__text">{{ post.shortDesc }}</div>
         <div class="post__stars">
           <i class="material-icons post__stars-icon">star</i>
-          <div class="post__stars-count">{{ post.startNumber }}</div>
+          <div class="post__stars-count">
+            {{ !isNaN(this.post.totalStars / this.post.starsNumber) ? Math.round(this.post.totalStars / this.post.starsNumber) : '' }}
+          </div>
         </div>
         <div class="post__footer">
           <div class="post__footer-like">
@@ -41,7 +44,7 @@ export default {
   components: { RoundButtonSmall },
   data() {
     return {
-      user: {}
+      user: {},
     }
   },
   props: {
@@ -64,10 +67,16 @@ export default {
       } catch (e) {
         console.log(e)
       }
+    },
+    starsNum() {
+      if (!isNaN(this.post.totlalStars / this.post.starsNumber)) {
+        this.star = Math.round(this.post.totlalStars / this.post.starsNumber)
+      }
     }
   },
   mounted() {
     this.fetchUser()
+    this.starsNum()
   }
 }
 </script>
@@ -83,11 +92,11 @@ export default {
 
   &__img {
     width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
+    aspect-ratio: 4 / 3;
     border-radius: 30px;
     box-shadow: 0 2px 2px 0 rgb(255 255 255 / 3%), 0 3px 1px -2px rgb(255 255 255 / 2%), 0 1px 5px 0 rgb(255 255 255 / 12%);
   }
+  object-fit: cover;
 
   &__delete {
     position: absolute;

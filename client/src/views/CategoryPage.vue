@@ -76,6 +76,7 @@ export default {
       sortOptions: [
         {value: 'createAt', name: 'Date Add'},
         {value: 'price', name: 'Best Selling'},
+        {value: 'Math.round(this.post.totalStars / this.post.starsNumber)', name: 'Popular'},
       ],
       location: {}
     }
@@ -104,7 +105,11 @@ export default {
           url += `max=${this.max}&`
         }
 
-        const res = await defaultAPIInstance.get(`${url}&sort=${this.sortOptions}`);
+        let res;
+
+       !this.selectedSort
+           ? res = await defaultAPIInstance.get(`${url}`)
+           : res = await defaultAPIInstance.get(`${url}&sort=${this.selectedSort}`);
 
         this.posts = res.data
       } catch (e) {
