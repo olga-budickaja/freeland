@@ -212,7 +212,7 @@ export default {
       threshold: 0.5
     }
     const callback = (entries, observer) => {
-      if (entries[0].isIntersecting) {
+      if (entries[0].isIntersecting && (this.page < this.totalPages)) {
         this.loadMoreGigs()
       }
     };
