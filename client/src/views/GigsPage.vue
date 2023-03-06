@@ -40,15 +40,16 @@
         @remove="removePost"
     />
     <loader-element v-else />
-    <div class="category__pages">
-      <Pagination
-          v-for="pageNumber in totalPages"
-          :page="page"
-          :pageNumber="pageNumber"
-          :key="pageNumber"
-          @click="changePage(pageNumber)"
-      />
-    </div>
+<!--    <div class="category__pages">-->
+<!--      <Pagination-->
+<!--          v-for="pageNumber in totalPages"-->
+<!--          :page="page"-->
+<!--          :pageNumber="pageNumber"-->
+<!--          :key="pageNumber"-->
+<!--          @click="changePage(pageNumber)"-->
+<!--      />-->
+<!--    </div>-->
+    <div ref="observer" class="observer"></div>
   </div>
 </template>
 
@@ -91,7 +92,7 @@ export default {
         {value: 'Math.round(this.post.totalStars / this.post.starsNumber)', name: 'Popular'},
       ],
       page: 1,
-      limit: 5,
+      limit: 2,
       totalPages: 0,
       location: {}
     }
@@ -107,10 +108,10 @@ export default {
     showDialog() {
       this.dialogVisible = true;
     },
-    changePage(pageNumber) {
-      this.page = pageNumber;
-      this.fetchGigs();
-    },
+    // changePage(pageNumber) {
+    //   this.page = pageNumber;
+    //   // this.fetchGigs();
+    // },
     async fetchGigs() {
       try {
         this.isPostsLoading = true;
@@ -155,6 +156,48 @@ export default {
         this.isPostsLoading = false;
       }
     },
+    async loadMoreGigs() {
+      try {
+        this.page += 1;
+        let url = `gigs?page=${this.page}&limit=${this.limit}&`;
+        // let url = `gigs`;
+
+        if (this.min.length) {
+          url += `min=${this.min}&`;
+        }
+
+        if (this.max.length) {
+          url += `max=${this.max}&`
+        }
+
+        if (this.searchQuery.length) {
+          url += `search=${this.searchQuery}&`
+        }
+
+        let res;
+
+        !this.selectedSort
+            ? res = await defaultAPIInstance.get(`${url}`, {
+              params: {
+                _page: this.page,
+                _limit: this.limit
+              }
+            })
+            : res = await defaultAPIInstance.get(`${url}&sort=${this.selectedSort}`, {
+              params: {
+                _page: this.page,
+                _limit: this.limit
+              }
+            });
+
+        this.totalPages = Math.ceil(res.headers['x-total-count'] / this.limit)
+
+        this.posts = [...this.posts, ...res.data]
+
+      } catch (e) {
+        this.$message('Something went wrong!');
+      }
+    },
     handleDelete() {
       this.min = '';
       this.max = '';
@@ -164,6 +207,17 @@ export default {
   mounted() {
     this.location = window.location
     this.fetchGigs();
+    const options = {
+      rootMargin: '0px',
+      threshold: 0.5
+    }
+    const callback = (entries, observer) => {
+      if (entries[0].isIntersecting) {
+        this.loadMoreGigs()
+      }
+    };
+    const observer = new IntersectionObserver(callback, options);
+    observer.observe(this.$refs.observer)
   },
   watch: {
     min: {
@@ -180,7 +234,10 @@ export default {
       handler() {
         this.fetchGigs();
       }
-    }
+    },
+    // page() {
+    //   this.fetchGigs();
+    // }
   },
 }
 </script>
@@ -218,5 +275,8 @@ export default {
     gap: 20px;
     padding: 40px 0;
   }
+}
+.observer {
+  height: 60px;
 }
 </style>
