@@ -8,14 +8,11 @@
 </template>
 
 <script>
+import toggleMixin from "@/mixins/ToggleMixin";
+
 export default {
   name: 'drop-element',
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    }
-  },
+  mixins: [toggleMixin]
 }
 </script>
 

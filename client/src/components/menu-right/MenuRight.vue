@@ -43,9 +43,11 @@ import DropMenu from "@/components/drop-menu/DropMenu.vue";
 import DropElement from "@/components/UI/DropElement.vue";
 import InputForm from "@/components/UI/InputForm.vue";
 import MainFlatButton from "@/components/UI/MainFlatButton.vue";
+import toggleMixin from "@/mixins/ToggleMixin";
 
 export default {
   name: 'menu-right',
+  mixins: [toggleMixin],
   components: { MainFlatButton, InputForm, DropElement, DropMenu },
   data() {
     return {
