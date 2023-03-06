@@ -88,6 +88,7 @@ export default {
   margin: 20px 0;
   &__wrapper {
     position: relative;
+    max-width: 95%;
     display: flex;
     flex-direction: column;
   }

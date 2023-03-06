@@ -49,7 +49,7 @@
 <!--          @click="changePage(pageNumber)"-->
 <!--      />-->
 <!--    </div>-->
-    <div ref="observer" class="observer"></div>
+    <div v-intersection="loadMoreGigs" class="observer"></div>
   </div>
 </template>
 
@@ -207,17 +207,17 @@ export default {
   mounted() {
     this.location = window.location
     this.fetchGigs();
-    const options = {
-      rootMargin: '0px',
-      threshold: 0.5
-    }
-    const callback = (entries, observer) => {
-      if (entries[0].isIntersecting && (this.page < this.totalPages)) {
-        this.loadMoreGigs()
-      }
-    };
-    const observer = new IntersectionObserver(callback, options);
-    observer.observe(this.$refs.observer)
+    // const options = {
+    //   rootMargin: '0px',
+    //   threshold: 0.5
+    // }
+    // const callback = (entries, observer) => {
+    //   if (entries[0].isIntersecting && (this.page < this.totalPages)) {
+    //     this.loadMoreGigs()
+    //   }
+    // };
+    // const observer = new IntersectionObserver(callback, options);
+    // observer.observe(this.$refs.observer)
   },
   watch: {
     min: {

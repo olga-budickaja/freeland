@@ -2,18 +2,20 @@
   <form class="form" @submit.prevent>
     <div class="title title-fz20 form__title">Create post</div>
     <input-form
-        id="name_user"
-        label="name_user"
-        v-model="post.username"
+        id="title"
+        type="text"
+        label="title"
+        v-model.trim="post.title"
     >
-      Username
+      <template v-slot:label>Title</template>
     </input-form>
     <input-form
-        id="desc_user"
-        label="desc_user"
-        v-model="post.desc"
+        id="description"
+        type="text"
+        label="description"
+        v-model.trim="post.desc"
     >
-      Description
+      <template v-slot:label>Description</template>
     </input-form>
     <main-button class="form__button" @click="createPost">
       <template v-slot:text>Create</template>
@@ -32,7 +34,7 @@ export default {
   data() {
     return {
       post: {
-        name: '',
+        title: '',
         desc: ''
       }
     }

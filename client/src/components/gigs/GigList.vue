@@ -47,7 +47,7 @@ export default {
 }
 .post-list-enter-active,
 .post-list-leave-active {
-  transition: all 0.4s ease;
+  transition: all 0.6s ease;
 }
 .post-list-enter-from,
 .post-list-leave-to {
@@ -55,6 +55,6 @@ export default {
   transform: translateY(130px);
 }
 .post-list-move {
-  transition: transform 0.4s ease;
+  transition: transform 0.6s ease;
 }
 </style>

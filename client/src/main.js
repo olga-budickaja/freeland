@@ -11,6 +11,7 @@ import { faTelegram } from "@fortawesome/free-brands-svg-icons/faTelegram";
 import { faSquareInstagram } from "@fortawesome/free-brands-svg-icons/faSquareInstagram";
 import { faLinkedin } from "@fortawesome/free-brands-svg-icons/faLinkedin";
 import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
+import directives from "@/directives";
 
 
 
@@ -20,7 +21,11 @@ components.forEach(component => {
     app.component(component.name, component)
 });
 
-library.add(faTelegram, faGithub, faLinkedin, faSquareInstagram)
+library.add(faTelegram, faGithub, faLinkedin, faSquareInstagram);
+
+directives.forEach(directive => {
+    app.directive(directive.name, directive);
+})
 
 app
     .use(messagePlugin)
