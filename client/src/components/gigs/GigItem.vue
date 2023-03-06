@@ -1,7 +1,9 @@
 <template>
   <div class="post" >
     <div class="post__wrapper">
-      <img class="post__img" :src="post.cover" alt="poster">
+      <router-link :to="`/gigs/${post._id}`">
+        <img class="post__img" :src="post.cover" alt="poster">
+      </router-link>
       <round-button-small
           class="orange darken-3 post__delete"
           @click="$emit('remove', post)"

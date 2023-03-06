@@ -10,7 +10,7 @@ const GigSchema = new Schema({
         type: String,
         required: true
     },
-    totalStarts: {
+    totalStars: {
         type: Number,
         default: 0
     },

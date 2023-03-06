@@ -23,7 +23,13 @@ const routes = [
         path: '/categories',
         name: 'category',
         meta: {layout: 'main'},
-        component: () => import('../views/CategoryPage.vue')
+        component: () => import('../views/GigsPage.vue')
+    },
+    {
+        path: '/gigs/:id',
+        name: 'gig',
+        meta: {layout: 'main'},
+        component: () => import('../views/GigPage.vue')
     },
 ]
 

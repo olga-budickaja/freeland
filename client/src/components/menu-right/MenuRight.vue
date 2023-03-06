@@ -1,5 +1,18 @@
 <template>
   <div class="menuRight">
+    <div class="menuRight__search">
+      <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search..."
+          class="menuRight__search-input"
+      />
+      <main-flat-button>
+        <template v-slot:icon>
+          <i @click="searchQuery" class="material-icons">search</i>
+        </template>
+      </main-flat-button>
+    </div>
     <div class="menuRight__lang">
       <div class="menuRight__lang-item">en</div>
        /
@@ -28,14 +41,17 @@
 import { mapState } from "vuex";
 import DropMenu from "@/components/drop-menu/DropMenu.vue";
 import DropElement from "@/components/UI/DropElement.vue";
+import InputForm from "@/components/UI/InputForm.vue";
+import MainFlatButton from "@/components/UI/MainFlatButton.vue";
 
 export default {
   name: 'menu-right',
-  components: { DropElement, DropMenu },
+  components: { MainFlatButton, InputForm, DropElement, DropMenu },
   data() {
     return {
       auth: false,
       dropVisible: false,
+      searchQuery: ''
     }
   },
   computed: {
@@ -47,6 +63,13 @@ export default {
     showDrop() {
       this.dropVisible = !this.dropVisible;
     }
+  },
+  watch: {
+    searchQuery: {
+      handler() {
+        this.fetchGigs();
+      }
+    },
   }
 }
 </script>
@@ -54,8 +77,27 @@ export default {
 <style lang="scss" scoped>
 .menuRight {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 30px;
+  &__search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 0 20px;
+    &-input {
+      border: none !important;
+      height: 30px !important;
+      &::placeholder {
+        font-weight: 100;
+        color: #767b88;
+        font-style: italic;
+      }
+    }
+  }
   &__lang {
     display: flex;
     flex: 1;

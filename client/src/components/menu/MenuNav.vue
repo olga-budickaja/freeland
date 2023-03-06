@@ -98,7 +98,7 @@ body.active + .menu__wrapp {
   left: -300px;
 }
 
-@media only screen and (max-width: 720px) {
+@media only screen and (max-width: 992px) {
   .menu {
     display: none;
     &__mobile {

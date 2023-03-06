@@ -22,7 +22,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 5px;
-  border-radius: 5px;
+  border-radius: 40px;
   gap: 10px;
   &__circle {
     display: flex;

@@ -21,7 +21,7 @@ export default {
 <style lang="scss" scoped>
 .item {
   padding: 5px 10px;
-  border-radius: 5px;
+  border-radius: 20px;
   &__link {
     font-weight: 200;
   }

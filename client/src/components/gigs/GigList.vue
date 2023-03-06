@@ -3,13 +3,13 @@
     <div v-if="posts.length" class="posts">
       <div class="posts__wrapper">
         <transition-group name="post-list">
-          <PostItem
-              v-for="post in posts"
-              :key="post._id"
-              :post="post"
-              :userId="post.userId"
-              @remove="$emit('remove', post)"
-          />
+            <PostItem
+                v-for="post in posts"
+                :key="post._id"
+                :post="post"
+                :userId="post.userId"
+                @remove="$emit('remove', post)"
+            />
         </transition-group>
       </div>
     </div>
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import PostItem from "@/components/posts/PostItem.vue";
+import PostItem from "@/components/gigs/GigItem.vue";
 
 export default {
   components: { PostItem },

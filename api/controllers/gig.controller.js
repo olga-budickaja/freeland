@@ -1,6 +1,5 @@
 import createError from "../utils/createError.js";
 import Gig from "../models/Gig.model.js";
-import gigModel from "../models/Gig.model.js";
 
 export const createGig = async (req, res, next) => {
   if(!req.isSeller)
@@ -45,6 +44,9 @@ export const getGig = async (req, res, next) => {
 }
 export const getGigs = async (req, res, next) => {
     const q = req.query;
+    const page = parseInt(q.page) || 1; // устанавливаем значение по умолчанию 1
+    const limit = parseInt(q.limit) || process.env.LIMIT; // устанавливаем значение по умолчанию 10
+
     const filters = {
         ...(q.userId && { userId: q.userId }),
         ...(q.cat && { cat: q.cat }),
@@ -54,8 +56,16 @@ export const getGigs = async (req, res, next) => {
         ...(q.search && { title: { $regex: q.search, $options: "i" } })
     }
     try {
-        const gigs = await Gig.find(filters).sort({ [q.sort]: -1 });
-        res.status(200).send(gigs);
+        const total = await Gig.countDocuments(filters); // добавлено: определяем общее количество документов
+        const gigs = await Gig.find(filters)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .sort({ [q.sort]: -1 });
+
+        res.status(200)
+            .set('x-total-count', total.toString())
+            .set('Access-Control-Expose-Headers', 'x-total-count')
+            .send(gigs);
     } catch (e) {
         next(e)
     }

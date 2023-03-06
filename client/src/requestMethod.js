@@ -12,7 +12,8 @@ export const loginAPIInstance = axios.create(loginConfig);
 const defaultConfig = {
     baseURL: process.env.VUE_APP_BASE_URL,
     headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-total-count': 'true'
     }
 }
 

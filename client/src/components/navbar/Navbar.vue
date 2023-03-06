@@ -28,7 +28,7 @@ export default {
   width: 100%;
   padding: 0 60px;
   z-index: 10;
-  background: rgba(2, 11, 38, 0.8);
+  background: rgba(2, 11, 38, 1);
   &__container {
     display: flex;
     gap: 20px;
@@ -41,7 +41,7 @@ export default {
   }
 }
 
-@media only screen and (max-width: 720px) {
+@media only screen and (max-width: 992px) {
  .navbar {
    padding: 0 20px;
    &__right {
