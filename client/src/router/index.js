@@ -26,6 +26,12 @@ const routes = [
         component: () => import('../views/GigsPage.vue')
     },
     {
+        path: '/gigs',
+        name: 'gigs',
+        meta: {layout: 'main'},
+        component: () => import('../views/GigsStorePage.vue')
+    },
+    {
         path: '/gigs/:id',
         name: 'gig',
         meta: {layout: 'main'},

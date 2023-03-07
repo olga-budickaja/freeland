@@ -39,6 +39,7 @@ export default {
       items: [
         {id: 1, name: 'Home', link: '/'},
         {id: 2, name: 'Categories', link: '/categories'},
+        {id: 2, name: 'Gigs', link: '/gigs'},
       ],
       isMenuOpen: false,
     }
@@ -98,7 +99,7 @@ body.active + .menu__wrapp {
   left: -300px;
 }
 
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 1024px) {
   .menu {
     display: none;
     &__mobile {

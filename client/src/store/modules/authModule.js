@@ -3,13 +3,11 @@ import { authApi } from "@/auth-api";
 export const authModule = {
     namespaced: true,
 
-    state() {
-        return {
-            credentials: {
-                user: JSON.parse(localStorage.getItem("user")) || null,
-            }
+    state: () => ({
+        credentials: {
+            user: JSON.parse(localStorage.getItem("user")) || null,
         }
-    },
+    }),
 
     mutations: {
         setUser(state, user) {

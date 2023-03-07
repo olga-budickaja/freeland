@@ -41,7 +41,7 @@ export default {
   }
 }
 
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 1024px) {
  .navbar {
    padding: 0 20px;
    &__right {

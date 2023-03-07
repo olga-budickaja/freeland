@@ -42,7 +42,7 @@ export default {
     flex: 11;
   }
 }
-@media only screen and (max-width: 720px) {
+@media only screen and (max-width: 1024px) {
   .main {
     &__menuIcon {
       display: none;
