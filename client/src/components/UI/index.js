@@ -6,6 +6,7 @@ import DropElement from "@/components/UI/DropElement.vue";
 import LoaderElement from "@/components/UI/LoaderElement.vue";
 import SelectForm from "@/components/UI/SelectForm.vue";
 import MainFlatButton from "@/components/UI/MainFlatButton.vue";
+import FlatButtonWhite from "@/components/UI/FlatButtonWhite.vue";
 
 export default [
     MainButton,
@@ -15,5 +16,6 @@ export default [
     DialogModal,
     DropElement,
     LoaderElement,
-    SelectForm
+    SelectForm,
+    FlatButtonWhite
 ]

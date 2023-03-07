@@ -14,12 +14,15 @@
     </div>
     <div class="category__filters">
       <div class="category__filters-minmax">
+        <div class="category__filters-minmax-title">Budget:</div>
         <FormMinMax
-            v-model:min="min"
-            v-model:max="max"
+            :model-value.min="min"
+            :model-value.max="max"
+            @update:model-value.min="setMinAndFetchData"
+            @update:model-value.max="setMaxAndFetchData"
         />
         <round-button-small
-            v-if="this.min.length || this.max.length"
+            v-if="this.min?.length || this.max?.length"
             class="orange darken-3 post__delete"
             @click="handleDelete"
         >
@@ -61,9 +64,11 @@ import RoundButtonSmall from "@/components/UI/RoundButtonSmall.vue";
 import Pagination from "@/components/pagination/Pagination.vue";
 import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import GigList from "@/components/gigs/GigList.vue";
+import FlatButtonWhite from "@/components/UI/FlatButtonWhite.vue";
 export default {
   name: 'gigs-page',
   components: {
+    FlatButtonWhite,
     GigList,
     Pagination,
     RoundButtonSmall,
@@ -84,7 +89,6 @@ export default {
   methods: {
     ...mapMutations({
         setPage: "gig/setPage",
-      setUrl: "gig/setUrl",
       setSelectedSort: "gig/setSelectedSort",
       setLimit: "gig/setLimit",
       setMin: "gig/setMin",
@@ -103,6 +107,14 @@ export default {
     },
     showDialog() {
       this.dialogVisible = true;
+    },
+    async setMinAndFetchData(value) {
+      this.setMin(value);
+      await this.fetchGigs();
+    },
+    async setMaxAndFetchData(value) {
+      this.setMax(value)
+      await  this.fetchGigs()
     },
     handleDelete() {
       this.min = '';
@@ -173,6 +185,9 @@ export default {
       align-items: center;
       flex-wrap: wrap;
       gap: 30px;
+      &-title {
+
+      }
     }
     &-sorts {
       display: flex;

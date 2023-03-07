@@ -1,33 +1,29 @@
 <template>
-  <form
-      @submit.prevent="submitMinMax"
-      class="formMinMax"
-  >
+  <form @submit.prevent="submitMinMax" class="formMinMax">
     <span class="category__filters-title">Budget:</span>
-    <input-form
+    <input
         id="min"
-        label="min"
-        v-model.trim="modelMin"
+        :value="modelMin"
+        @input="modelMin = $event.target.value"
         type="number"
         class="validate formMinMax__input"
-    >
-      <template class="formMinMax__label" v-slot:label>Min</template>
-    </input-form>
-    <div class="form__error" v-if="numError">Please enter a valid value for min.</div>
-    <input-form
+        placeholder="Min"
+    />
+    <div class="form__error" v-if="numError">
+      Please enter a valid value for min.
+    </div>
+    <input
         id="max"
-        label="max"
-        v-model.trim="modelMax"
+        :value="modelMax"
+        @input="modelMax = $event.target.value"
         type="number"
         class="validate formMinMax__input"
-    >
-      <template class="formMinMax__label" v-slot:label>Max</template>
-    </input-form>
-    <div class="form__error" v-if="numError">Please enter a valid value for max.</div>
-    <button
-        class="formMinMax__button waves-effect waves-light"
-        type="submit"
-    >
+        placeholder="Max"
+    />
+    <div class="form__error" v-if="numError">
+      Please enter a valid value for max.
+    </div>
+    <button class="formMinMax__button waves-effect waves-light" type="submit">
       Apply
     </button>
   </form>
@@ -41,60 +37,57 @@ export default {
   name: 'form-min-max',
   components: { MainButton, InputForm },
   props: {
-    min: {
-      type: String
+    modelValue: {
+      type: Object,
+      default: () => ({ min: null, max: null }),
     },
-    max: {
-      type: String
-    }
   },
   data() {
     return {
-      modelMax: '',
-      modelMin: '',
-      numError: '',
-      isValidMax: true
+      modelMax: this.modelValue.max,
+      modelMin: this.modelValue.min,
+      numError: "",
+      isValidMax: true,
     }
   },
   methods: {
     validateMax() {
       let isValid = true
 
-      if (this.modelMax === '') {
-        this.isValidMax = false;
-        return;
+      if (this.modelMax === '' || this.modelMin === '') {
+        this.numError = "Please enter a valid value for min and max.";
+        isValid = false;
+      } else {
+        const num = parseFloat(this.modelMax);
+        const numMin = parseFloat(this.modelMin);
+
+        if (isNaN(num) || num < 0 || num > 10000 || isNaN(numMin) || numMin < 0 || numMin > 10000) {
+          this.numError = "Please enter a valid value for min and max.";
+          isValid = false;
+        } else {
+          this.numError = "";
+        }
       }
-
-      if (this.modelMin === '') {
-        this.isValidMax = false;
-        return;
-      }
-
-      const num = parseFloat(this.modelMax);
-      const numMin = parseFloat(this.modelMin);
-
-      if (isNaN(num) || num < 0 || num > 10000) {
-        this.isValidMax = false;
-        return;
-      }
-
-      if (isNaN(numMin) || numMin < 0 || numMin > 10000) {
-        this.isValidMax = false;
-        return;
-      }
-
-      this.isValidMax = true;
 
       return isValid;
     },
     submitMinMax() {
       if (this.validateMax()) {
-        this.$emit('update:min', this.modelMin);
-        this.$emit('update:max', this.modelMax);
+        this.$emit("update:modelValue", {
+          min: this.modelMin,
+          max: this.modelMax,
+        });
       }
+    },
+  },
+  watch: {
+    modelMin(newValue) {
+      this.modelMin = newValue;
+    },
+    modelMax(newValue) {
+      this.modelMax = newValue;
     }
   }
-
 }
 </script>
 
@@ -116,5 +109,4 @@ export default {
     border-radius: 40px;
   }
 }
-
 </style>
