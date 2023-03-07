@@ -3,9 +3,9 @@ export const gigModule = {
     state: () => ({
         gigs: [],
         isGigsLoading: false,
+        loadMoreExecuted: false,
         selectedSort: '',
         searchQuery: '',
-        url: '',
         min: '',
         max: '',
         page: 1,
@@ -14,7 +14,7 @@ export const gigModule = {
         sortOptions: [
             {value: 'createAt', name: 'Date Add'},
             {value: 'price', name: 'Best Selling'},
-            {value: 'Math.round(this.gig.totalStars / this.gig.starsNumber)', name: 'Popular'},
+            {value: 'totalStars', name: 'Popular'},
         ],
     }),
     getters: {
@@ -22,6 +22,9 @@ export const gigModule = {
     mutations: {
         setGigs(state, gigs) {
             state.gigs = gigs;
+        },
+        addGigs(state, gigs) {
+            state.gigs = [...state.gigs, ...gigs];
         },
         setIsGigsLoading(state, isGigsLoading) {
             state.isGigsLoading = isGigsLoading;
@@ -31,9 +34,6 @@ export const gigModule = {
         },
         setSearchQuery(state, searchQuery) {
             state.searchQuery = searchQuery;
-        },
-        setUrl(state, url) {
-            state.url = url;
         },
         setMin(state, min) {
             state.min = min;
@@ -52,31 +52,34 @@ export const gigModule = {
         },
     },
     actions: {
-        async fetchGigs({ commit, state }) {
-            try {
-                commit('setIsGigsLoading', true);
+        async fetchGigs({ state, commit }) {
+            if (!state.loadMoreExecuted) {
+                try {
+                    commit('setIsGigsLoading', true);
+                    const res = await fetchData(state);
 
-                const res = await fetchData(state);
+                    commit('setTotalPages', Math.ceil(res.headers['x-total-count'] / state.limit));
+                    commit('setGigs', res.data);
 
-                commit('setTotalPages', Math.ceil(res.headers['x-total-count'] / state.limit))
-                commit('setGigs', res.data)
-
-            } catch (e) {
-                console.error(e);
-            } finally {
-                commit('setIsGigsLoading', false);
+                } catch (e) {
+                    console.log(e)
+                } finally {
+                    commit('setIsGigsLoading', false)
+                }
             }
+
         },
 
-        async loadMoreGigs({ commit, state }) {
+        async loadMoreGigs({ state, commit }) {
             try {
                 commit('setPage', state.page + 1);
 
+                state.loadMoreExecuted = true;
+
                 const res = await fetchData(state);
 
-                commit('setTotalPages', Math.ceil(res.headers['x-total-count'] / state.limit))
-                commit('setGigs', [...state.gigs, ...res.data])
-
+                commit('setTotalPages', Math.ceil(res.headers['x-total-count'] / state.limit));
+                commit('setGigs', [...state.gigs, ...res.data]);
             } catch (e) {
                 console.log(e);
             }
@@ -88,32 +91,29 @@ export const gigModule = {
 async function fetchData(state) {
     let url = `gigs?page=${state.page}&limit=${state.limit}&`;
 
-    if (state.min.length) {
-        url += `min=${this.min}&`;
-    }
-
-    if (state.max.length) {
-        url += `max=${this.max}&`
-    }
-
-    if (state.searchQuery.length) {
-        url += `search=${this.searchQuery}&`
+    switch (true) {
+        case state.min.length:
+            url += `min=${state.min}&`;
+            break;
+        case state.max.length:
+            url += `max=${state.max}&`;
+            break;
+        case state.searchQuery.length:
+            url += `search=${state.searchQuery}&`;
+            break;
+        default:
+            break;
     }
 
     let res;
-
-    !state.selectedSort
-        ? res = await defaultAPIInstance.get(`${url}`, {
-            params: {
-                _page: state.page,
-                _limit: state.limit
-            }
-        })
-        : res = await defaultAPIInstance.get(`${url}&sort=${state.selectedSort}`, {
-            params: {
-                _page: state.page,
-                _limit: state.limit
-            }
-        });
+    switch (Boolean(state.selectedSort)) {
+        case true:
+            res = await defaultAPIInstance.get(`${url}&sort=${state.selectedSort}`);
+            break;
+        default:
+            res = await defaultAPIInstance.get(url);
+            break;
+    }
     return res;
 }
+

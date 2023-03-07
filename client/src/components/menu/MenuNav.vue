@@ -37,9 +37,9 @@ export default {
   data() {
     return {
       items: [
-        {id: 1, name: 'Home', link: '/'},
-        {id: 2, name: 'Categories', link: '/categories'},
-        {id: 2, name: 'Gigs', link: '/gigs'},
+        {id: 1325, name: 'Home', link: '/'},
+        {id: 2688, name: 'Categories', link: '/categories'},
+        {id: 3978, name: 'Gigs', link: '/gigs'},
       ],
       isMenuOpen: false,
     }

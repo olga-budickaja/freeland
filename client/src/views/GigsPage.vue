@@ -34,9 +34,9 @@
         />
       </div>
     </div>
-    <PostList
-        v-if="!isPostsLoading"
-        :posts="posts"
+    <GigList
+        v-if="!isGigsLoading"
+        :gigs="gigs"
         @remove="removePost"
     />
     <loader-element v-else />
@@ -55,7 +55,6 @@
 
 <script>
 import PostForm from "@/components/forms/PostForm.vue";
-import PostList from "@/components/gigs/GigList.vue";
 import DialogModal from "@/components/UI/DialogModal.vue";
 import MainButton from "@/components/UI/MainButton.vue";
 import { defaultAPIInstance } from "@/requestMethod";
@@ -64,9 +63,11 @@ import SelectForm from "@/components/UI/SelectForm.vue";
 import FormMinMax from "@/components/forms/FormMinMax.vue";
 import RoundButtonSmall from "@/components/UI/RoundButtonSmall.vue";
 import Pagination from "@/components/pagination/Pagination.vue";
+import GigList from "@/components/gigs/GigList.vue";
 export default {
   name: 'category-page',
   components: {
+    GigList,
     Pagination,
     RoundButtonSmall,
     FormMinMax,
@@ -74,14 +75,13 @@ export default {
     LoaderElement,
     MainButton,
     DialogModal,
-    PostList,
     PostForm
   },
   data() {
     return {
-      posts: [],
+      gigs: [],
       dialogVisible: false,
-      isPostsLoading: false,
+      isGigsLoading: false,
       selectedSort: '',
       min: '',
       max: '',
@@ -89,7 +89,7 @@ export default {
       sortOptions: [
         {value: 'createAt', name: 'Date Add'},
         {value: 'price', name: 'Best Selling'},
-        {value: 'Math.round(this.post.totalStars / this.post.starsNumber)', name: 'Popular'},
+        {value: 'Math.round(this.gig.totalStars / this.gig.starsNumber)', name: 'Popular'},
       ],
       page: 1,
       limit: 2,
@@ -98,12 +98,12 @@ export default {
     }
   },
   methods: {
-    createPost(post) {
-      this.posts.push(post);
+    createPost(gig) {
+      this.gigs.push(gig);
       this.dialogVisible = false;
     },
-    removePost(post) {
-      this.posts = this.posts.filter(p => p._id !== post._id);
+    removePost(gig) {
+      this.gigs = this.gigs.filter(p => p._id !== gig._id);
     },
     showDialog() {
       this.dialogVisible = true;
@@ -114,7 +114,7 @@ export default {
     // },
     async fetchGigs() {
       try {
-        this.isPostsLoading = true;
+        this.isGigsLoading = true;
         let url = `gigs?page=${this.page}&limit=${this.limit}&`;
         // let url = `gigs`;
 
@@ -148,12 +148,12 @@ export default {
 
        this.totalPages = Math.ceil(res.headers['x-total-count'] / this.limit)
 
-        this.posts = res.data
+        this.gigs = res.data
 
       } catch (e) {
         this.$message('Something went wrong!');
       } finally {
-        this.isPostsLoading = false;
+        this.isGigsLoading = false;
       }
     },
     async loadMoreGigs() {
@@ -192,7 +192,7 @@ export default {
 
         this.totalPages = Math.ceil(res.headers['x-total-count'] / this.limit)
 
-        this.posts = [...this.posts, ...res.data]
+        this.gigs = [...this.gigs, ...res.data]
 
       } catch (e) {
         this.$message('Something went wrong!');
@@ -201,23 +201,12 @@ export default {
     handleDelete() {
       this.min = '';
       this.max = '';
-      location.reload();
+      // location.reload();
     },
   },
   mounted() {
     this.location = window.location
     this.fetchGigs();
-    // const options = {
-    //   rootMargin: '0px',
-    //   threshold: 0.5
-    // }
-    // const callback = (entries, observer) => {
-    //   if (entries[0].isIntersecting && (this.page < this.totalPages)) {
-    //     this.loadMoreGigs()
-    //   }
-    // };
-    // const observer = new IntersectionObserver(callback, options);
-    // observer.observe(this.$refs.observer)
   },
   watch: {
     min: {
@@ -235,9 +224,6 @@ export default {
         this.fetchGigs();
       }
     },
-    // page() {
-    //   this.fetchGigs();
-    // }
   },
 }
 </script>
@@ -280,3 +266,7 @@ export default {
   height: 60px;
 }
 </style>
+
+
+
+

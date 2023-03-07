@@ -14,10 +14,10 @@
     </div>
     <div class="category__filters">
       <div class="category__filters-minmax">
-<!--        <FormMinMax-->
-<!--            v-model:min="min"-->
-<!--            v-model:max="max"-->
-<!--        />-->
+        <FormMinMax
+            v-model:min="min"
+            v-model:max="max"
+        />
         <round-button-small
             v-if="this.min.length || this.max.length"
             class="orange darken-3 post__delete"
@@ -29,7 +29,8 @@
       <div class="category__filters-sorts">
         <span class="category__filters-title">Sort by: </span>
         <SelectForm
-            v-model="selectedSort"
+            :model-value="selectedSort"
+            @update:model-value="setSelectedSort"
             :options="sortOptions"
         />
       </div>
@@ -40,7 +41,11 @@
         @remove="removePost"
     />
     <loader-element v-else />
-    <div v-intersection="loadMoreGigs" class="observer"></div>
+    <div
+        v-if="this.page < this.totalPages"
+        v-intersection="loadMoreGigs"
+        class="observer"
+    ></div>
   </div>
 </template>
 
@@ -81,18 +86,20 @@ export default {
         setPage: "gig/setPage",
       setUrl: "gig/setUrl",
       setSelectedSort: "gig/setSelectedSort",
-      setLimit: "gig/setLimit"
+      setLimit: "gig/setLimit",
+      setMin: "gig/setMin",
+      setMax: "gig/setMax"
     }),
     ...mapActions({
       loadMoreGigs: "gig/loadMoreGigs",
       fetchGigs: "gig/fetchGigs"
     }),
     createGig(gig) {
-      this.posts.push(gig);
+      this.gigs.push(gig);
       this.dialogVisible = false;
     },
     removePost(post) {
-      this.posts = this.posts.filter(p => p._id !== post._id);
+      this.gigs = this.gigs.filter(p => p._id !== post._id);
     },
     showDialog() {
       this.dialogVisible = true;
