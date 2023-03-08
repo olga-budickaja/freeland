@@ -16,6 +16,7 @@
           <img v-if="user.img" class="gig__header-img" :src="user.img" alt="user">
           <h2 class="gig__header-title title-fz20 title">{{ user.username }}</h2>
         </div>
+        <h2 class="gig__title">{{ gig.title }}</h2>
         <div class="gig__text">{{ gig.shortDesc }}</div>
         <div class="gig__stars">
           <i class="material-icons gig__stars-icon">star</i>
@@ -105,6 +106,10 @@ export default {
     position: absolute;
     top: 15px;
     right: 15px;
+  }
+
+  &__title {
+    font-size: 16px;
   }
 
   &__desc {

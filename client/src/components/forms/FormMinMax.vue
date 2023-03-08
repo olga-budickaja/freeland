@@ -44,8 +44,8 @@ export default {
   },
   data() {
     return {
-      modelMax: this.modelValue.max,
-      modelMin: this.modelValue.min,
+      modelMax: this.modelValue.max !== null ? +this.modelValue.max : "",
+      modelMin: this.modelValue.min !== null ? +this.modelValue.min : "",
       numError: "",
       isValidMax: true,
     }

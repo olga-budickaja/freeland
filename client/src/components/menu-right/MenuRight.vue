@@ -1,18 +1,9 @@
 <template>
   <div class="menuRight">
-    <div class="menuRight__search">
-      <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search..."
-          class="menuRight__search-input"
-      />
-      <main-flat-button>
-        <template v-slot:icon>
-          <i @click="searchQuery" class="material-icons">search</i>
-        </template>
-      </main-flat-button>
-    </div>
+    <input-search
+        :model-value="searchQuery"
+        @update:model-value="setSearchQuery"
+    />
     <div class="menuRight__lang">
       <div class="menuRight__lang-item">en</div>
        /
@@ -38,41 +29,86 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import DropMenu from "@/components/drop-menu/DropMenu.vue";
 import DropElement from "@/components/UI/DropElement.vue";
 import InputForm from "@/components/UI/InputForm.vue";
 import MainFlatButton from "@/components/UI/MainFlatButton.vue";
 import toggleMixin from "@/mixins/ToggleMixin";
+import InputSearch from "@/components/UI/InputSearch.vue";
 
 export default {
   name: 'menu-right',
   mixins: [toggleMixin],
-  components: { MainFlatButton, InputForm, DropElement, DropMenu },
+  components: { InputSearch, MainFlatButton, InputForm, DropElement, DropMenu },
   data() {
     return {
       auth: false,
       dropVisible: false,
-      searchQuery: ''
     }
+  },
+  methods: {
+    ...mapMutations({
+      setSearchQuery: "gig/setSearchQuery",
+      setGigs: "gig/setGigs",
+      setPage: "gig/setPage",
+      setSelectedSort: "gig/setSelectedSort",
+      setLimit: "gig/setLimit",
+      setMin: "gig/setMin",
+      setMax: "gig/setMax"
+    }),
+    ...mapActions({
+      handleSearch: "gig/handleSearch",
+      fetchGigs: "gig/fetchGigs",
+      loadMoreGigs: "gig/loadMoreGigs",
+    }),
+    showDrop() {
+      this.dropVisible = !this.dropVisible;
+    },
   },
   computed: {
     ...mapState({
-      user: state => state.authModule.credentials.user
+      user: state => state.authModule.credentials.user,
+      searchQuery: state => state.gig.searchQuery,
+      gigs: state => state.gig.gigs,
+      min: state => state.gig.min,
+      max: state => state.gig.max,
+      isGigsLoading: state => state.gig.isGigsLoading,
+      selectedSort: state => state.gig.selectedSort,
+      url: state => state.gig.url,
+      page: state => state.gig.page,
+      limit: state => state.gig.limit,
+      totalPages: state => state.gig.totalPages,
     }),
+    // handleSearchQuery() {
+    //   console.log(this.gigs.filter(gig => gig?.title.includes(this.searchQuery)))
+    //   // return
+    // }
   },
-  methods: {
-    showDrop() {
-      this.dropVisible = !this.dropVisible;
-    }
+  mounted() {
+    this.location = window.location
+    this.fetchGigs();
   },
   watch: {
-    searchQuery: {
+    min: {
       handler() {
         this.fetchGigs();
       }
     },
-  }
+    max: {
+      handler() {
+        this.fetchGigs();
+      }
+    },
+    selectedSort: {
+      handler() {
+        this.fetchGigs();
+      }
+    },
+    page() {
+      this.fetchGigs();
+    }
+  },
 }
 </script>
 
@@ -82,24 +118,6 @@ export default {
   flex-wrap: wrap;
   align-items: center;
   gap: 30px;
-  &__search {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 0 20px;
-    &-input {
-      border: none !important;
-      height: 30px !important;
-      &::placeholder {
-        font-weight: 100;
-        color: #767b88;
-        font-style: italic;
-      }
-    }
-  }
   &__lang {
     display: flex;
     flex: 1;

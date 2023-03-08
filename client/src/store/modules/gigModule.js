@@ -19,6 +19,9 @@ export const gigModule = {
         ],
     }),
     getters: {
+        handleSearchQuery(state) {
+            return [...state.gigs].filter(gig => gig.title.toLowerCase().includes(state.searchQuery))
+        }
     },
     mutations: {
         setGigs(state, gigs) {
@@ -57,7 +60,7 @@ export const gigModule = {
             if (!state.loadMoreExecuted) {
                 try {
                     commit('setIsGigsLoading', true);
-
+                    console.log(state.searchQuery);
                     const res = await fetchData({ state, commit });
 
                     commit('setTotalPages', Math.ceil(res.headers['x-total-count'] / state.limit));
@@ -77,6 +80,7 @@ export const gigModule = {
                 commit('setPage', state.page + 1);
 
                 state.loadMoreExecuted = true;
+
                 const res = await fetchData({ state, commit });
 
                 commit('setTotalPages', Math.ceil(res.headers['x-total-count'] / state.limit));
@@ -85,6 +89,11 @@ export const gigModule = {
                 console.log(e);
             }
         },
+
+        async handleSearch({ state, dispatch, commit}) {
+            commit('setSearchQuery', state.searchQuery);
+            await dispatch('fetchGigs');
+        }
     },
     namespaced: true
 }

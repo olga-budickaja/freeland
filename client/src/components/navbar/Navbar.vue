@@ -4,7 +4,7 @@
       <Logo />
       <Menu />
       <div class="navbar__right">
-        <MenuRight/>
+        <MenuRight />
       </div>
     </div>
   </div>

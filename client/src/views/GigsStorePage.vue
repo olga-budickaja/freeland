@@ -16,8 +16,8 @@
       <div class="category__filters-minmax">
         <div class="category__filters-minmax-title">Budget:</div>
         <FormMinMax
-            :model-value.min="min"
-            :model-value.max="max"
+            :model-value.min="{ min: null, max: null }"
+            :model-value.max="{ min: null, max: null }"
             @update:model-value.min="setMinAndFetchData"
             @update:model-value.max="setMaxAndFetchData"
         />
@@ -40,7 +40,7 @@
     </div>
     <GigList
         v-if="!isGigsLoading"
-        :gigs="gigs"
+        :gigs="handleSearchQuery"
         @remove="removePost"
     />
     <loader-element v-else />
@@ -137,7 +137,7 @@ export default {
       sortOptions: state => state.gig.sortOptions
     }),
     ...mapGetters({
-
+      handleSearchQuery: "gig/handleSearchQuery"
     }),
   },
   mounted() {

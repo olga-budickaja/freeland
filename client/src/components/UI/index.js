@@ -7,6 +7,7 @@ import LoaderElement from "@/components/UI/LoaderElement.vue";
 import SelectForm from "@/components/UI/SelectForm.vue";
 import MainFlatButton from "@/components/UI/MainFlatButton.vue";
 import FlatButtonWhite from "@/components/UI/FlatButtonWhite.vue";
+import InputSearch from "@/components/UI/InputSearch.vue";
 
 export default [
     MainButton,
@@ -17,5 +18,6 @@ export default [
     DropElement,
     LoaderElement,
     SelectForm,
-    FlatButtonWhite
+    FlatButtonWhite,
+    InputSearch
 ]
