@@ -26,16 +26,24 @@
     <button class="formMinMax__button waves-effect waves-light" type="submit">
       Apply
     </button>
+    <round-button-small
+        v-if="this.modelMin.length"
+        class="orange darken-3 post__delete"
+        @click="handleDelete"
+    >
+      clear
+    </round-button-small>
   </form>
 </template>
 
 <script>
 import InputForm from "@/components/UI/InputForm.vue";
 import MainButton from "@/components/UI/MainButton.vue";
+import RoundButtonSmall from "@/components/UI/RoundButtonSmall.vue";
 
 export default {
   name: 'form-min-max',
-  components: { MainButton, InputForm },
+  components: { RoundButtonSmall, MainButton, InputForm },
   props: {
     modelValue: {
       type: Object,
@@ -78,6 +86,11 @@ export default {
           max: this.modelMax,
         });
       }
+    },
+    handleDelete() {
+      this.modelMin = this.modelValue.min !== null ? +this.modelValue.min : ""
+      this.modelMax = this.modelValue.max !== null ? +this.modelValue.max : ""
+      location.reload();
     },
   },
   watch: {

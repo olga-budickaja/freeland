@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import PostForm from "@/components/forms/PostForm.vue";
+import PostForm from "@/components/forms/AddGigForm.vue";
 import DialogModal from "@/components/UI/DialogModal.vue";
 import MainButton from "@/components/UI/MainButton.vue";
 import { defaultAPIInstance } from "@/requestMethod";

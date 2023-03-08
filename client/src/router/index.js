@@ -37,6 +37,12 @@ const routes = [
         meta: {layout: 'main'},
         component: () => import('../views/GigPage.vue')
     },
+    {
+        path: '/add',
+        name: 'addGig',
+        meta: {layout: 'main'},
+        component: () => import('../views/AddGigPage.vue')
+    },
 ]
 
 const router = createRouter({

@@ -1,7 +1,7 @@
 <template>
   <div class="category container">
     <dialog-modal v-model:show="dialogVisible">
-      <PostForm
+      <AddGigForm
           @create="createGig"
       />
     </dialog-modal>
@@ -14,20 +14,12 @@
     </div>
     <div class="category__filters">
       <div class="category__filters-minmax">
-        <div class="category__filters-minmax-title">Budget:</div>
         <FormMinMax
             :model-value.min="{ min: null, max: null }"
             :model-value.max="{ min: null, max: null }"
             @update:model-value.min="setMinAndFetchData"
             @update:model-value.max="setMaxAndFetchData"
         />
-        <round-button-small
-            v-if="this.min?.length || this.max?.length"
-            class="orange darken-3 post__delete"
-            @click="handleDelete"
-        >
-          clear
-        </round-button-small>
       </div>
       <div class="category__filters-sorts">
         <span class="category__filters-title">Sort by: </span>
@@ -53,8 +45,6 @@
 </template>
 
 <script>
-import PostForm from "@/components/forms/PostForm.vue";
-import PostList from "@/components/gigs/GigList.vue";
 import DialogModal from "@/components/UI/DialogModal.vue";
 import MainButton from "@/components/UI/MainButton.vue";
 import LoaderElement from "@/components/UI/LoaderElement.vue";
@@ -65,6 +55,7 @@ import Pagination from "@/components/pagination/Pagination.vue";
 import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import GigList from "@/components/gigs/GigList.vue";
 import FlatButtonWhite from "@/components/UI/FlatButtonWhite.vue";
+import AddGigForm from "@/components/forms/AddGigForm.vue";
 export default {
   name: 'gigs-page',
   components: {
@@ -77,8 +68,7 @@ export default {
     LoaderElement,
     MainButton,
     DialogModal,
-    PostList,
-    PostForm
+    AddGigForm
   },
   data() {
     return {
@@ -115,11 +105,6 @@ export default {
     async setMaxAndFetchData(value) {
       this.setMax(value)
       await  this.fetchGigs()
-    },
-    handleDelete() {
-      this.min = '';
-      this.max = '';
-      location.reload();
     },
   },
   computed: {

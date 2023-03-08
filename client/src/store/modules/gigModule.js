@@ -17,6 +17,11 @@ export const gigModule = {
             {value: 'price', name: 'Best Selling'},
             {value: 'totalStars', name: 'Popular'},
         ],
+        catOptions: [
+            {value: 'design', name: 'Design'},
+            {value: 'ui', name: 'UI'},
+            {value: '3d', name: '3D'},
+        ]
     }),
     getters: {
         handleSearchQuery(state) {
@@ -60,7 +65,7 @@ export const gigModule = {
             if (!state.loadMoreExecuted) {
                 try {
                     commit('setIsGigsLoading', true);
-                    console.log(state.searchQuery);
+
                     const res = await fetchData({ state, commit });
 
                     commit('setTotalPages', Math.ceil(res.headers['x-total-count'] / state.limit));
@@ -104,10 +109,6 @@ async function fetchData({ state, commit }) {
 
     if (state.min.min > 0 || state.min.max > 0) {
         url += `min=${state.min.min}&max=${state.min.max}`;
-    }
-
-    if (state.searchQuery.length) {
-        url += `search=${state.searchQuery}`
     }
 
     commit('setUrl', url)
