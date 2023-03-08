@@ -263,6 +263,10 @@ export default {
   &__textarea {
     min-height: 150px;
     padding: 20px;
+    border-radius: 8px;
+    &::placeholder {
+      color: #767b88;
+    }
   }
   &__button {
     margin: 60px auto 0 auto;

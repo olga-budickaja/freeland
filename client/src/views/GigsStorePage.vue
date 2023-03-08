@@ -7,7 +7,7 @@
     </dialog-modal>
     <div class="category__title">
       <h1 class="title-fz48 title">All</h1>
-      <main-button @click="showDialog">
+      <main-button @click="this.$router.push('/add')">
         <template v-slot:text>Create gig</template>
         <template v-slot:icon>add_circle</template>
       </main-button>
@@ -56,6 +56,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import GigList from "@/components/gigs/GigList.vue";
 import FlatButtonWhite from "@/components/UI/FlatButtonWhite.vue";
 import AddGigForm from "@/components/forms/AddGigForm.vue";
+import router from "@/router";
 export default {
   name: 'gigs-page',
   components: {
@@ -77,6 +78,9 @@ export default {
     }
   },
   methods: {
+    router() {
+      return router
+    },
     ...mapMutations({
         setPage: "gig/setPage",
       setSelectedSort: "gig/setSelectedSort",
