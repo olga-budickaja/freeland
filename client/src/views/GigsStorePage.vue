@@ -33,7 +33,7 @@
     <GigList
         v-if="!isGigsLoading"
         :gigs="handleSearchQuery"
-        @remove="removePost"
+        @remove="removeGig"
     />
     <loader-element v-else />
     <div
@@ -74,7 +74,7 @@ export default {
   data() {
     return {
       location: {},
-      dialogVisible: false
+      dialogVisible: false,
     }
   },
   methods: {
@@ -96,8 +96,8 @@ export default {
       this.gigs.push(gig);
       this.dialogVisible = false;
     },
-    removePost(post) {
-      this.gigs = this.gigs.filter(p => p._id !== post._id);
+    removeGig(gig) {
+      this.gigs = this.$store.commit('gig/setGigs', this.gigs.filter(p => p._id !== gig._id)) ;
     },
     showDialog() {
       this.dialogVisible = true;

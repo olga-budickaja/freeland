@@ -94,7 +94,7 @@
 import InputForm from "@/components/UI/InputForm.vue";
 import MainButton from "@/components/UI/MainButton.vue";
 import router from "@/router";
-import { authApi } from "@/auth-api";
+import { authApi } from "@/api/auth-api";
 export default {
   name: 'form-registration',
   components: { MainButton, InputForm },

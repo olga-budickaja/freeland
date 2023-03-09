@@ -1,5 +1,5 @@
 import { defaultAPIInstance } from "@/requestMethod";
-import { gigApi } from "@/gig-api";
+import { gigApi } from "@/api/gig-api";
 export const gigModule = {
     state: () => ({
         gigs: [],
@@ -135,7 +135,6 @@ export const gigModule = {
             delivery,
             revision,
             features}) {
-
                 gigApi.addGig(
                     title,
                     price,

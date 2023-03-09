@@ -1,4 +1,4 @@
-import { authApi } from "@/auth-api";
+import { authApi } from "@/api/auth-api";
 
 export const authModule = {
     namespaced: true,

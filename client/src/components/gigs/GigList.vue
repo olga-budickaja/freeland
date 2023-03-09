@@ -2,7 +2,7 @@
   <div>
     <div v-if="gigs.length" class="gigs">
       <div class="gigs__wrapper">
-        <transition-group name="gig-list">
+        <transition-group name="gig-list" appear>
             <GigItem
                 v-for="gig in gigs"
                 :key="gig._id"

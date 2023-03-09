@@ -18,7 +18,6 @@
 
 <script>
 import DropElement from "@/components/UI/DropElement.vue";
-import { authApi } from "@/auth-api";
 
 export default {
   name: 'drop-menu',
