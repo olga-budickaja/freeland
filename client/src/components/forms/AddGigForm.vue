@@ -92,7 +92,7 @@
           <template v-slot:label>Revision Number</template>
         </input-form>
         <div class="formAdd__input-wrapp">
-          <label class="formAdd__input-label" for="features">Add Features</label>
+          <label class="formAdd__input-label formAdd__input-features" for="features">Add Features</label>
           <input-form
               id="features"
               type="text"
@@ -258,6 +258,11 @@ export default {
     }
     &-label {
       font-size: 15px;
+      font-weight: 200;
+    }
+    &-features {
+      margin-top: 30px;
+      font-weight: 400;
     }
   }
   &__textarea {

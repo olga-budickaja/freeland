@@ -24,8 +24,32 @@ export const gigModule = {
         ]
     }),
     getters: {
-        handleSearchQuery(state) {
-            return [...state.gigs].filter(gig => gig.title.toLowerCase().includes(state.searchQuery))
+        filteredGigs(state) {
+            let gigs = [...state.gigs];
+
+            if (state.min && state.min.min > 0 || state.min.max > 0) {
+                gigs = gigs.filter(gig => {
+                    const price = Number(gig.price);
+                    return price >= state.min.min && price <= state.min.max;
+                });
+            }
+
+            if (state.selectedSort) {
+                gigs.sort((a, b) => {
+                    if (state.selectedSort === 'createAt') {
+                        return new Date(b.createAt) - new Date(a.createAt);
+                    } else if (state.selectedSort === 'price') {
+                        return Number(b.price) - Number(a.price);
+                    } else if (state.selectedSort === 'totalStars') {
+                        return b.totalStars - a.totalStars;
+                    }
+                });
+            }
+
+            return gigs;
+        },
+        handleSearchQuery(state, getter) {
+            return [...getter.filteredGigs].filter(gig => gig.title.toLowerCase().includes(state.searchQuery))
         }
     },
     mutations: {

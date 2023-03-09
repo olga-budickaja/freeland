@@ -7,7 +7,7 @@
     </dialog-modal>
     <div class="category__title">
       <h1 class="title-fz48 title">All</h1>
-      <main-button @click="this.$router.push('/add')">
+      <main-button @click="$router.push('/add')">
         <template v-slot:text>Create gig</template>
         <template v-slot:icon>add_circle</template>
       </main-button>
@@ -17,8 +17,8 @@
         <FormMinMax
             :model-value.min="{ min: null, max: null }"
             :model-value.max="{ min: null, max: null }"
-            @update:model-value.min="setMinAndFetchData"
-            @update:model-value.max="setMaxAndFetchData"
+            @update:model-value.min="setMin"
+            @update:model-value.max="setMax"
         />
       </div>
       <div class="category__filters-sorts">
@@ -102,14 +102,6 @@ export default {
     showDialog() {
       this.dialogVisible = true;
     },
-    async setMinAndFetchData(value) {
-      this.setMin(value);
-      await this.fetchGigs();
-    },
-    async setMaxAndFetchData(value) {
-      this.setMax(value)
-      await  this.fetchGigs()
-    },
   },
   computed: {
     ...mapState({
@@ -134,21 +126,6 @@ export default {
     this.fetchGigs();
   },
   watch: {
-    min: {
-      handler() {
-        this.fetchGigs();
-      }
-    },
-    max: {
-      handler() {
-        this.fetchGigs();
-      }
-    },
-    selectedSort: {
-      handler() {
-        this.fetchGigs();
-      }
-    },
     page() {
       this.fetchGigs();
     }
