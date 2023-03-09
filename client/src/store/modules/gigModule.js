@@ -1,4 +1,5 @@
 import { defaultAPIInstance } from "@/requestMethod";
+import { gigApi } from "@/gig-api";
 export const gigModule = {
     state: () => ({
         gigs: [],
@@ -10,8 +11,9 @@ export const gigModule = {
         min: '',
         max: '',
         page: 1,
-        limit: 2,
+        limit: 5,
         totalPages: 0,
+        dataGig: {},
         sortOptions: [
             {value: 'createAt', name: 'Date Add'},
             {value: 'price', name: 'Best Selling'},
@@ -83,6 +85,9 @@ export const gigModule = {
         setTotalPages(state, totalPages) {
             state.totalPages = totalPages;
         },
+        setDataGig(state, dataGig) {
+            state.dataGig = dataGig
+        }
     },
     actions: {
         async fetchGigs({ state, commit }) {
@@ -119,9 +124,33 @@ export const gigModule = {
             }
         },
 
-        async handleSearch({ state, dispatch, commit}) {
-            commit('setSearchQuery', state.searchQuery);
-            await dispatch('fetchGigs');
+        async uploadGig({commit}, {
+            title,
+            price,
+            cat,
+            cover,
+            images,
+            shortTitle,
+            shortDesc,
+            delivery,
+            revision,
+            features}) {
+
+                gigApi.addGig(
+                    title,
+                    price,
+                    cat,
+                    cover,
+                    images,
+                    shortTitle,
+                    shortDesc,
+                    delivery,
+                    revision,
+                    features).then((res) => {
+                    commit('setDataGig', res.data)
+                }).catch((err) => {
+                    console.log(err)
+                });
         }
     },
     namespaced: true

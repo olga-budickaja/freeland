@@ -1,5 +1,5 @@
 <template>
-  <form class="formAdd" @submit.prevent>
+  <form class="formAdd" @submit.prevent="onSubmit">
     <div class="title title-fz20 formAdd__title">Create gig</div>
     <div class="formAdd__wrapp">
       <div class="formAdd__left">
@@ -8,7 +8,7 @@
             type="text"
             name="title"
             label="title"
-            v-model.trim="gig.title"
+            v-model="gig.titleModel"
             class="formAdd__input validate"
         >
           <template v-slot:label>Title</template>
@@ -16,24 +16,32 @@
         <div class="form__error" v-if="titleError">{{ titleError }}</div>
 
         <SelectForm
-            v-model="catModel"
             :options="catOptions"
-            v-model.trim="gig.catModel"
+            v-model="gig.catModel"
             name="cat"
         />
-        <div class="formAdd__input-wrapp">
+        <div v-if="imgPrc > 0" class="formAdd__progress">
+          <div class="progress">
+            <div class="determinate" :style="`width: ${imgPrc}%`"></div>
+          </div>
+          <div class="formAdd__progress-prc">{{ imgPrc }}%</div>
+        </div>
+
+        <div v-else class="formAdd__input-wrapp">
           <label class="formAdd__input-label" for="cover">Cover image 4x3</label>
-          <input
+          <upload-file
               id="cover"
               type="file"
+              v-model="gig.coverModel"
               name="cat"
           />
         </div>
         <div class="formAdd__input-wrapp">
           <label class="formAdd__input-label" for="images">Upload images</label>
-          <input
+          <upload-file
               id="images"
               type="file"
+              v-model="gig.imagesModel"
               name="images"
           />
         </div>
@@ -53,13 +61,15 @@
         <input-form
             id="shortTitle"
             type="text"
-            label="Service Title (max length 50 symbols)"
             name="shortTitle"
-            v-model.trim="gig.shortTitle"
+            label="shortTitle"
+            v-model="gig.shortTitleModel"
             class="formAdd__input validate"
         >
           <template v-slot:label>Service Title (max length 50 symbols)</template>
         </input-form>
+        <div class="form__error" v-if="shortTitleError">{{ shortTitleError }}</div>
+
         <div class="formAdd__input-wrapp">
           <label class="formAdd__input-label" for="desc">Description</label>
           <textarea
@@ -71,73 +81,93 @@
           />
         </div>
         <div class="form__error" v-if="shortDescError">{{ shortDescError }}</div>
+
         <input-form
             id="delivery"
             type="number"
-            label="Delivery Time (e.g. 3 days)"
             name="delivery"
-            v-model.trim="gig.deliveryModel"
+            label="delivery"
+            v-model="gig.deliveryModel"
             class="formAdd__input validate"
         >
           <template v-slot:label>Delivery Time (e.g. 3 days)</template>
         </input-form>
+
         <input-form
             id="revision"
             type="number"
             name="revision"
-            label="Revision Number"
-            v-model.trim="gig.revisionModel"
+            label="revision"
+            v-model="gig.revisionModel"
             class="formAdd__input validate"
         >
           <template v-slot:label>Revision Number</template>
         </input-form>
+
+        <input-form
+            id="price"
+            type="number"
+            name="price"
+            label="price"
+            v-model="gig.priceModel"
+            class="formAdd__input validate"
+        >
+          <template v-slot:label>Price</template>
+        </input-form>
+
         <div class="formAdd__input-wrapp">
+
           <label class="formAdd__input-label formAdd__input-features" for="features">Add Features</label>
+
           <input-form
               id="features"
               type="text"
               name="features"
-              label="e.g. page design"
-              v-model.trim="gig.featuresModel"
+              label="features"
+              v-model="gig.featuresDesignModel"
               class="formAdd__input validate"
           >
             <template v-slot:label>e.g. page design</template>
           </input-form>
+
           <input-form
-              id="features"
+              id="features1"
               type="text"
-              name="features"
-              label="e.g. file uploading"
-              v-model.trim="gig.featuresModel"
+              name="features1"
+              label="features1"
+              v-model="gig.featuresUploadingModel"
               class="formAdd__input validate"
           >
             <template v-slot:label>e.g. file uploading</template>
           </input-form>
+
           <input-form
-              id="features"
+              id="features2"
               type="text"
-              name="features"
-              label="e.g. setting up a domain"
-              v-model.trim="gig.featuresModel"
+              name="features2"
+              label="features2"
+              v-model="gig.featuresSettingModel"
               class="formAdd__input validate"
           >
             <template v-slot:label>e.g. setting up a domain</template>
           </input-form>
+
           <input-form
-              id="features"
+              id="features3"
               type="text"
-              name="features"
-              v-model.trim="gig.featuresModel"
-              label="e.g. hosting"
+              name="features3"
+              label="features3"
+              v-model="gig.featuresHostingModel"
               class="formAdd__input validate"
           >
             <template v-slot:label>e.g. hosting</template>
           </input-form>
+
         </div>
       </div>
     </div>
 
-    <main-button class="formAdd__button" @click="createPost">
+    <main-button class="formAdd__button" type="submit">
       <template v-slot:text>Create</template>
       <template v-slot:icon>add_circle</template>
     </main-button>
@@ -150,28 +180,46 @@ import MainButton from "@/components/UI/MainButton.vue";
 import InputForm from "@/components/UI/InputForm.vue";
 import { mapState } from "vuex";
 import SelectForm from "@/components/UI/SelectForm.vue";
+import UploadFile from "@/components/forms/UploadFile.vue";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { app } from "@/fb";
+import router from "@/router";
 
 export default {
-  components: { SelectForm, InputForm, MainButton },
+  components: { UploadFile, SelectForm, InputForm, MainButton },
   data() {
     return {
       gig: {
-        title: '',
-        desc: '',
-        shortTitle: '',
-        coverModel: '',
-        imagesModel: '',
+        titleModel: '',
+        catModel: '',
+        coverModel: null,
+        imagesModel: null,
         descModel: '',
+        shortTitleModel: '',
+        shortDescModel: '',
         deliveryModel: '',
         revisionModel: '',
-        shortDescModel: '',
-        featuresModel: '',
-        catModel: ''
+        priceModel: '',
+        featuresDesignModel: '',
+        featuresUploadingModel: '',
+        featuresSettingModel: '',
+        featuresHostingModel: '',
+
       },
-      catModel: '',
+      title: '',
+      price: '',
+      cat: '',
+      cover: '',
+      images: '',
+      shortTitle: '',
+      shortDesc: '',
+      delivery: '',
+      revision: '',
+      features: [],
       titleError: '',
       shortDescError: '',
       shortTitleError: '',
+      imgPrc: null,
       isValid: false,
     }
   },
@@ -179,21 +227,21 @@ export default {
     validateForm() {
       this.isValid = true
 
-      if (this.gig.title.length > 120) {
+      if (this.gig.titleModel.length > 120) {
         this.titleError = 'Title cannot be more than 120 characters'
         this.isValid = false
       } else {
         this.titleError = ''
       }
 
-      if (this.gig.shortTitle.length > 50) {
+      if (this.gig.shortTitleModel.length > 50) {
         this.shortTitleError = 'Short Title cannot be more than 50 characters'
         this.isValid = false
       } else {
         this.shortTitleError = ''
       }
 
-      if (this.gig.shortDesc.length > 300) {
+      if (this.gig.shortDescModel.length > 300) {
         this.shortDescError = 'Short Title cannot be more than 300 characters'
         this.isValid = false
       } else {
@@ -202,20 +250,85 @@ export default {
 
       return this.isValid
     },
-    createPost() {
-      if (this.validateForm()) {
-        this.$emit('create', this.gig)
-        this.gig = {
-          name: '',
-          desc: ''
-        }
+    onSubmit() {
+
+      if (this.validateForm() && this.user) {
+        this.$emit('create', this.gig);
+        console.log(this.gig.coverModel.name)
+        const fileName = new Date().getTime() + this.gig.coverModel.name;
+        const storage = getStorage(app);
+        const storageRef = ref(storage, fileName);
+        const uploadTask = uploadBytesResumable(storageRef, this.gig.coverModel);
+
+        uploadTask.on('state_changed',
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              this.imgPrc = Math.round(progress)
+              switch (snapshot.state) {
+                case 'paused':
+                  console.log('Upload is paused');
+                  break;
+                case 'running':
+                  console.log('Upload is running');
+                  break;
+                default:
+                  break;
+              }
+            },
+            (error) => {
+              // Handle unsuccessful uploads
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref)
+              .then((downloadURL) => {
+                const data = {
+                  title: this.gig.titleModel,
+                  price: this.gig.priceModel,
+                  cat: !this.gig.catModel ? 'design' : this.gig.catModel,
+                  cover: downloadURL,
+                  images: this.gig.imagesModel,
+                  shortTitle: this.gig.shortTitleModel,
+                  shortDesc: this.gig.shortDescModel,
+                  delivery: this.gig.deliveryModel,
+                  revision: this.gig.revisionModel,
+                  features: [
+                    this.gig.featuresDesignModel,
+                    this.gig.featuresHostingModel,
+                    this.gig.featuresUploadingModel,
+                    this.gig.featuresSettingModel
+                  ],
+                }
+                this.$store.dispatch('gig/uploadGig', data)
+                    .then((res) => {
+                        this.gig = {
+                          titleModel: '',
+                          catModel: '',
+                          coverModel: '',
+                          imagesModel: '',
+                          descModel: '',
+                          shortTitleModel: '',
+                          shortDescModel: '',
+                          deliveryModel: '',
+                          revisionModel: '',
+                          featuresModel: '',
+                        }
+                        router.push({ name: 'gigs' })
+                    }).catch((res) => {
+                      this.$message(res?.data.message);
+                    });
+               });
+            }
+        );
+      } else {
+        console.log('Form is invalid')
       }
 
     }
   },
   computed: {
     ...mapState({
-      catOptions: state => state.gig.catOptions
+      catOptions: state => state.gig.catOptions,
+      user: state => state.authModule.credentials.user,
     }),
   }
 }
@@ -248,6 +361,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: 30px;
   }
   &__input {
     width: 100%;
