@@ -33,7 +33,7 @@
     <GigList
         v-if="!isGigsLoading"
         :gigs="handleSearchQuery"
-        @remove="removeGig"
+        @remove="removedGig"
     />
     <loader-element v-else />
     <div
@@ -82,7 +82,7 @@ export default {
       return router
     },
     ...mapMutations({
-        setPage: "gig/setPage",
+      setPage: "gig/setPage",
       setSelectedSort: "gig/setSelectedSort",
       setLimit: "gig/setLimit",
       setMin: "gig/setMin",
@@ -90,14 +90,21 @@ export default {
     }),
     ...mapActions({
       loadMoreGigs: "gig/loadMoreGigs",
-      fetchGigs: "gig/fetchGigs"
+      fetchGigs: "gig/fetchGigs",
+      removeGig: "gig/removeGig"
     }),
     createGig(gig) {
       this.gigs.push(gig);
       this.dialogVisible = false;
     },
-    removeGig(gig) {
-      this.gigs = this.$store.commit('gig/setGigs', this.gigs.filter(p => p._id !== gig._id)) ;
+    removedGig(gig) {
+      if (this.user._id === gig.userId) {
+        this.removeGig(gig._id)
+        this.gigs = this.$store.commit('gig/setGigs', this.gigs.filter(p => p._id !== gig._id));
+      } else {
+        this.$message('You can delete only your gig!');
+      }
+
     },
     showDialog() {
       this.dialogVisible = true;

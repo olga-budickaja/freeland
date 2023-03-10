@@ -1,8 +1,9 @@
-import { defaultAPIInstance } from "@/requestMethod";
+import { defaultAPIInstance, loginAPIInstance } from "@/requestMethod";
 import { gigApi } from "@/api/gig-api";
 export const gigModule = {
     state: () => ({
         gigs: [],
+        filteredGigs: [],
         isGigsLoading: false,
         loadMoreExecuted: false,
         url: '',
@@ -87,7 +88,7 @@ export const gigModule = {
         },
         setDataGig(state, dataGig) {
             state.dataGig = dataGig
-        }
+        },
     },
     actions: {
         async fetchGigs({ state, commit }) {
@@ -153,6 +154,14 @@ export const gigModule = {
                 }).catch((err) => {
                     console.log(err)
                 });
+        },
+
+        async removeGig({ state, commit }, gigId) {
+            try {
+                await loginAPIInstance.delete(`gigs/${gigId}`);
+            } catch (e) {
+                console.log(e)
+            }
         }
     },
     namespaced: true
