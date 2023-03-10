@@ -46,7 +46,6 @@ export const getGigs = async (req, res, next) => {
     const q = req.query;
     const page = parseInt(q.page) || 1; // устанавливаем значение по умолчанию 1
     const limit = parseInt(q.limit) || process.env.LIMIT; // устанавливаем значение по умолчанию 10
-
     const filters = {
         ...(q.userId && { userId: q.userId }),
         ...(q.cat && { cat: q.cat }),
@@ -60,12 +59,12 @@ export const getGigs = async (req, res, next) => {
         const gigs = await Gig.find(filters)
         .skip((page - 1) * limit)
         .limit(limit)
-        .sort({ [q.sort]: -1 });
+        .sort({ [q.sort]: - 1 });
 
         res.status(200)
             .set('x-total-count', total.toString())
             .set('Access-Control-Expose-Headers', 'x-total-count')
-            .send(gigs);
+            .json(gigs.flat().sort((a, b) => b.createdAt - a.createdAt))
     } catch (e) {
         next(e)
     }

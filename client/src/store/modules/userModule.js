@@ -1,4 +1,4 @@
-import { defaultAPIInstance } from "@/requestMethod";
+import { userApi } from "@/api/user-api";
 
 export const userModule = {
     state: () => ({
@@ -11,12 +11,9 @@ export const userModule = {
     },
     actions: {
         async fetchUser({ commit }, id) {
-            try {
-                const res = await defaultAPIInstance.get(`users/${id}`);
-                commit('setUser', res.data);
-            } catch (e) {
-                console.log(e)
-            }
+            userApi.getUser(id).then((res) => {
+                commit('setUser', res.data)
+            })
         }
     },
     namespaced: true

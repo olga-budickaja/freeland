@@ -58,7 +58,6 @@ export default {
       setMax: "gig/setMax"
     }),
     ...mapActions({
-      handleSearch: "gig/handleSearch",
       fetchGigs: "gig/fetchGigs",
       loadMoreGigs: "gig/loadMoreGigs",
     }),

@@ -41,7 +41,7 @@
 <script>
 
 import RoundButtonSmall from "@/components/UI/RoundButtonSmall.vue";
-import { mapActions, mapState } from "vuex";
+import { defaultAPIInstance } from "@/requestMethod";
 
 export default {
   components: { RoundButtonSmall },
@@ -53,26 +53,33 @@ export default {
     userId: {
       type: String,
       required: true
+    },
+  },
+  data() {
+    return {
+      user: {},
     }
   },
   methods: {
-    ...mapActions({
-      fetchUser: "user/fetchUser"
-    }),
+    async fetchUser() {
+      try {
+        if (this.gig) {
+          const res = await defaultAPIInstance.get(`users/${this.userId}`)
+          this.user = res.data
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
     starsNum() {
       if (!isNaN(this.gig.totalStars / this.gig.starsNumber)) {
         this.star = Math.round(this.gig.totalStars / this.gig.starsNumber)
       }
-    }
-  },
-  computed: {
-    ...mapState({
-      user: state => state.user.user
-    }),
+    },
   },
   mounted() {
-    this.fetchUser(this.userId)
-    this.starsNum()
+    this.fetchUser();
+    this.starsNum();
   }
 }
 </script>

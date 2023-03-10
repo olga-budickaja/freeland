@@ -1,5 +1,9 @@
 <template>
-  <form class="formAdd" @submit.prevent="onSubmit">
+  <form
+      class="formAdd"
+      @submit.prevent="onSubmit"
+      enctype="multipart/form-data"
+  >
     <div class="title title-fz20 formAdd__title">Create gig</div>
     <div class="formAdd__wrapp">
       <div class="formAdd__left">
@@ -30,19 +34,19 @@
         <div v-else class="formAdd__input-wrapp">
           <label class="formAdd__input-label" for="cover">Cover image 4x3</label>
           <upload-file
-              id="cover"
-              type="file"
-              v-model="gig.coverModel"
-              name="cat"
+            :id="cover"
+            :model-value="gig.coverModel"
+            @update:model-value="(val) => gig.coverModel = val"
+            :name="cat"
           />
         </div>
         <div class="formAdd__input-wrapp">
           <label class="formAdd__input-label" for="images">Upload images</label>
           <upload-file
-              id="images"
-              type="file"
-              v-model="gig.imagesModel"
-              name="images"
+              :id="images"
+              :model-value="gig.imagesModel"
+              @update:model-value="(val) => gig.imagesModel = val"
+              :name="images"
           />
         </div>
         <div class="formAdd__input-wrapp">
@@ -204,7 +208,6 @@ export default {
         featuresUploadingModel: '',
         featuresSettingModel: '',
         featuresHostingModel: '',
-
       },
       title: '',
       price: '',
@@ -251,11 +254,9 @@ export default {
       return this.isValid
     },
     onSubmit() {
-
       if (this.validateForm() && this.user) {
-        this.$emit('create', this.gig);
-        console.log(this.gig.coverModel.name)
-        const fileName = new Date().getTime() + this.gig.coverModel.name;
+        // this.$emit('create', this.gig);
+        const fileName = `${new Date().getTime()}.jpg`;
         const storage = getStorage(app);
         const storageRef = ref(storage, fileName);
         const uploadTask = uploadBytesResumable(storageRef, this.gig.coverModel);
@@ -298,6 +299,7 @@ export default {
                     this.gig.featuresSettingModel
                   ],
                 }
+                console.log(data)
                 this.$store.dispatch('gig/uploadGig', data)
                     .then((res) => {
                         this.gig = {
@@ -312,7 +314,10 @@ export default {
                           revisionModel: '',
                           featuresModel: '',
                         }
-                        router.push({ name: 'gigs' })
+                        router.push({ name: 'gigs' });
+                        // setTimeout(() => {
+                        //   location.reload();
+                        // }, 2000);
                     }).catch((res) => {
                       this.$message(res?.data.message);
                     });
@@ -330,7 +335,7 @@ export default {
       catOptions: state => state.gig.catOptions,
       user: state => state.authModule.credentials.user,
     }),
-  }
+  },
 }
 </script>
 

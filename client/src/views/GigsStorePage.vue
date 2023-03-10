@@ -115,7 +115,8 @@ export default {
       page: state => state.gig.page,
       limit: state => state.gig.limit,
       totalPages: state => state.gig.totalPages,
-      sortOptions: state => state.gig.sortOptions
+      sortOptions: state => state.gig.sortOptions,
+      user: state => state.authModule.credentials.user,
     }),
     ...mapGetters({
       handleSearchQuery: "gig/handleSearchQuery"

@@ -11,7 +11,7 @@ export const gigModule = {
         min: '',
         max: '',
         page: 1,
-        limit: 5,
+        limit: 10,
         totalPages: 0,
         dataGig: {},
         sortOptions: [
@@ -97,7 +97,8 @@ export const gigModule = {
 
                     const res = await fetchData({ state, commit });
 
-                    commit('setTotalPages', Math.ceil(res.headers['x-total-count'] / state.limit));
+                    commit('setTotalPages', Math.ceil(Number(res.headers['x-total-count'] / state.limit)));
+
                     commit('setGigs', res.data);
 
                 } catch (e) {
@@ -117,14 +118,16 @@ export const gigModule = {
 
                 const res = await fetchData({ state, commit });
 
-                commit('setTotalPages', Math.ceil(res.headers['x-total-count'] / state.limit));
+                commit('setTotalPages', Math.ceil(Number(res.headers['x-total-count'] / state.limit)));
+
                 commit('setGigs', [...state.gigs, ...res.data]);
+
             } catch (e) {
                 console.log(e);
             }
         },
 
-        async uploadGig({commit}, {
+        async uploadGig({state, commit}, {
             title,
             price,
             cat,
@@ -146,7 +149,7 @@ export const gigModule = {
                     delivery,
                     revision,
                     features).then((res) => {
-                    commit('setDataGig', res.data)
+                    commit('setDataGig', res.data);
                 }).catch((err) => {
                     console.log(err)
                 });
