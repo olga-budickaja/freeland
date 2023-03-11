@@ -93,10 +93,7 @@ export default {
       fetchGigs: "gig/fetchGigs",
       removeGig: "gig/removeGig"
     }),
-    createGig(gig) {
-      this.gigs.push(gig);
-      this.dialogVisible = false;
-    },
+
     removedGig(gig) {
       if (this.user._id === gig.userId) {
         this.removeGig(gig._id)

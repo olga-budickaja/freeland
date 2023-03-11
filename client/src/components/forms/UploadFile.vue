@@ -40,7 +40,7 @@ export default {
     async onChange(event) {
       const file = event.target.files[0];
       const dataCover = URL.createObjectURL(file);
-      const blob = await resizeImg.resizeImg(dataCover);
+      const blob = await resizeImg.resizeImg(dataCover, 776, 582);
       this.$emit('update:modelValue', blob);
       this.dataCover = dataCover
     }

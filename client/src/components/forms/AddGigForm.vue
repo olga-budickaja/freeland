@@ -255,7 +255,6 @@ export default {
     },
     onSubmit() {
       if (this.validateForm() && this.user) {
-        // this.$emit('create', this.gig);
         const fileName = `${new Date().getTime()}.jpg`;
         const storage = getStorage(app);
         const storageRef = ref(storage, fileName);
@@ -299,9 +298,9 @@ export default {
                     this.gig.featuresSettingModel
                   ],
                 }
-                console.log(data)
                 this.$store.dispatch('gig/uploadGig', data)
                     .then((res) => {
+                        this.$store.commit('gig/setGigs', data)
                         this.gig = {
                           titleModel: '',
                           catModel: '',
@@ -334,6 +333,7 @@ export default {
     ...mapState({
       catOptions: state => state.gig.catOptions,
       user: state => state.authModule.credentials.user,
+      gigs: state => state.gig.gigs,
     }),
   },
 }

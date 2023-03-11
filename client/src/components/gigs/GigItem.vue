@@ -97,6 +97,7 @@ export default {
   &__img {
     width: 100%;
     aspect-ratio: 4 / 3;
+    object-fit: cover;
     border-radius: 30px;
     box-shadow: 0 2px 2px 0 rgb(255 255 255 / 3%), 0 3px 1px -2px rgb(255 255 255 / 2%), 0 1px 5px 0 rgb(255 255 255 / 12%);
   }
